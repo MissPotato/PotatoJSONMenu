@@ -1,0 +1,13 @@
+name: PotatoJSONMenu
+version: 1.01
+main: af633acb7229547b4899207b4c150c407.PluginMain
+author: LadyPotaty
+description: Utilizes Vanilla's JSON component to make highly customizable chat menus.
+api-version: 1.13
+commands:
+  jsonmenu:
+    description: Admin options for JSON Menus
+    permission: potato.jsonmenu.admin
+  menu:
+    description: Base command for menus, no arguments defaults to first menu.
+    permission: potato.jsonmenu
