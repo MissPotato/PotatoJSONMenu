@@ -1,4 +1,4 @@
-package af633acb7229547b4899207b4c150c407;
+package a29ba4648d8f14c52b3cb1fa21a17c279;
 import java.io.*;
 import java.nio.file.*;
 import java.sql.*;
@@ -19,7 +19,6 @@ public class PluginMain extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		saveDefaultConfig();
-		VariableManager.loadVariables(this);
 		instance = this;
 		getServer().getPluginManager().registerEvents(this, this);
 		try {
@@ -27,7 +26,7 @@ public class PluginMain extends JavaPlugin implements Listener {
 					new ArrayList(Arrays.asList("menusFolder")));
 			VariableManager.setValue(false, "./plugins/PotatoJSONMenu/config.yml",
 					new ArrayList(Arrays.asList("configFile")));
-			VariableManager.setValue(false, new java.lang.Double(1.01d), new ArrayList(Arrays.asList("pluginVersion")));
+			VariableManager.setValue(false, new java.lang.Double(1.02d), new ArrayList(Arrays.asList("pluginVersion")));
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 				Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Variables set"));
 			}
@@ -45,27 +44,30 @@ public class PluginMain extends JavaPlugin implements Listener {
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 				Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Checking configs"));
 			}
-			while ((((Number) PluginMain.getInstance().getConfig().get("configVersion"))
+			if ((((Number) PluginMain.getInstance().getConfig().get("configVersion"))
 					.doubleValue() < ((Number) VariableManager.getValue(false,
 							new ArrayList(Arrays.asList("pluginVersion")))).doubleValue())) {
 				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 					Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Version Checking"));
 				}
-				Bukkit.getConsoleSender().sendMessage(PluginMain.color("Config version beind"));
+				Bukkit.getConsoleSender().sendMessage(PluginMain.color("Config version beind updating"));
 				procedure("update", ((java.util.List) null));
 				reloadConfig();
+				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+					Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Config update finish"));
+				}
 			}
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 				Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Running gen"));
 			}
 			procedure("genMenus", ((java.util.List) null));
+			procedure("menuCache", ((java.util.List) null));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void onDisable() {
-		VariableManager.saveVariables();
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] commandArgs) {
@@ -101,8 +103,8 @@ public class PluginMain extends JavaPlugin implements Listener {
 					if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 						Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG:Specified menu found"));
 					}
-					procedure("runMenu",
-							new ArrayList(Arrays.asList(sender, PluginMain.createList(commandArgs).get(((int) 0d)))));
+					procedure("runMenu", new ArrayList(Arrays.asList(sender,
+							Double.valueOf(String.valueOf(PluginMain.createList(commandArgs).get(((int) 0d)))))));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -122,6 +124,7 @@ public class PluginMain extends JavaPlugin implements Listener {
 					if (commandArgs[((int) 0d)].contains("reload")) {
 						reloadConfig();
 						procedure("genMenus", ((java.util.List) null));
+						procedure("menuCache", ((java.util.List) null));
 						sender.sendMessage(PluginMain.color("&2You have reloaded the config!"));
 					} else if ((!PluginMain.createList(commandArgs).contains("version")
 							&& !PluginMain.createList(commandArgs).contains("reload"))) {
@@ -136,6 +139,77 @@ public class PluginMain extends JavaPlugin implements Listener {
 	}
 
 	public static void procedure(String procedure, List<?> args) throws Exception {
+		if (procedure.equalsIgnoreCase("menuCache")) {
+			Object a703b35c49ddf825b94dd04d1d28896cf = null;
+			Object a29e17c613c6aac53aab93212fbaceb70 = null;
+			Object ac7e54802b7c5d9dab276d69f24f305c7 = null;
+			ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(1d));
+			while ((((Number) ac7e54802b7c5d9dab276d69f24f305c7)
+					.doubleValue() <= ((Number) PluginMain.getInstance().getConfig().get("menus")).doubleValue())) {
+				a703b35c49ddf825b94dd04d1d28896cf = new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")));
+				VariableManager.setValue(false, new ArrayList(), new ArrayList(
+						Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)))));
+				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+					Bukkit.getConsoleSender().sendMessage(PluginMain
+							.color(("DEBUG: Caching menu " + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
+				}
+				VariableManager.addToValue(false, org.bukkit.configuration.file.YamlConfiguration
+						.loadConfiguration(new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+						.get("onJoin"),
+						new ArrayList(
+								Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)))));
+				VariableManager.addToValue(false, org.bukkit.configuration.file.YamlConfiguration
+						.loadConfiguration(new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+						.get("onJoinDelay"),
+						new ArrayList(
+								Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)))));
+				VariableManager.addToValue(false, org.bukkit.configuration.file.YamlConfiguration
+						.loadConfiguration(new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+						.get("JSON"),
+						new ArrayList(
+								Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)))));
+				VariableManager.addToValue(false, org.bukkit.configuration.file.YamlConfiguration
+						.loadConfiguration(new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+						.get("permission"),
+						new ArrayList(
+								Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)))));
+				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+					a29e17c613c6aac53aab93212fbaceb70 = new java.lang.Double(0d);
+					for (int a64db437ac0114e1aac9d011d55a76f13 = 0; a64db437ac0114e1aac9d011d55a76f13 < ((java.util.List) VariableManager
+							.getValue(false,
+									new ArrayList(Arrays.asList(
+											("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+													.size(); a64db437ac0114e1aac9d011d55a76f13++) {
+						Bukkit.getConsoleSender().sendMessage(
+								PluginMain.color(String.valueOf(((java.util.List) VariableManager.getValue(false,
+										new ArrayList(Arrays.asList(
+												("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+														.get(((Number) a29e17c613c6aac53aab93212fbaceb70)
+																.intValue()))));
+						a29e17c613c6aac53aab93212fbaceb70 = UtilMethods.addToObject(a29e17c613c6aac53aab93212fbaceb70,
+								new java.lang.Double(1d));
+					}
+				}
+				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+					Bukkit.getConsoleSender().sendMessage(PluginMain
+							.color(("DEBUG: Done caching menu " + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
+				}
+				ac7e54802b7c5d9dab276d69f24f305c7 = UtilMethods.addToObject(ac7e54802b7c5d9dab276d69f24f305c7,
+						new java.lang.Double(1d));
+				ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
+						Math.round(((Number) ac7e54802b7c5d9dab276d69f24f305c7).doubleValue()));
+			}
+		}
 		if (procedure.equalsIgnoreCase("genMenus")) {
 			Object a703b35c49ddf825b94dd04d1d28896cf = null;
 			Object ac7e54802b7c5d9dab276d69f24f305c7 = null;
@@ -213,12 +287,17 @@ public class PluginMain extends JavaPlugin implements Listener {
 									VariableManager.getValue(false, new ArrayList(Arrays.asList("pluginVersion")))))),
 							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
 				}
-				if ((new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).exists()
-						&& (((Number) org.bukkit.configuration.file.YamlConfiguration
-								.loadConfiguration(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)))
-								.get("menuVersion"))
-										.doubleValue() < ((Number) VariableManager.getValue(false,
-												new ArrayList(Arrays.asList("pluginVersion")))).doubleValue()))) {
+				if ((new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).exists()
+						&& (((Number) PluginMain.getInstance().getConfig().get("configVersion"))
+								.doubleValue() < ((Number) org.bukkit.configuration.file.YamlConfiguration
+										.loadConfiguration(new File((String
+												.valueOf(VariableManager.getValue(false,
+														new ArrayList(Arrays.asList("menusFolder"))))
+												+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))
+														+ ".yml"))))
+										.get("menuVersion")).doubleValue()))) {
 					Bukkit.getConsoleSender()
 							.sendMessage(PluginMain.color(("&cSomething is wrong with the file for Menu "
 									+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
@@ -233,118 +312,129 @@ public class PluginMain extends JavaPlugin implements Listener {
 		}
 		if (procedure.equalsIgnoreCase("runMenu")) {
 			Object ac7e54802b7c5d9dab276d69f24f305c7 = null;
+			ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
+					Math.round(((Number) Double.valueOf(String.valueOf(args.get(((int) 1d))))).doubleValue()));
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 				Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Running menu"));
 				Bukkit.getConsoleSender()
 						.sendMessage(PluginMain.color(("DEBUG: Menu Arg0" + String.valueOf(args.get(((int) 0d))))));
 				Bukkit.getConsoleSender()
 						.sendMessage(PluginMain.color(("DEBUG: Menu Arg0" + String.valueOf(args.get(((int) 1d))))));
+				Bukkit.getConsoleSender().sendMessage(PluginMain
+						.color(("DEBUG: Menu Arg0" + String.valueOf(VariableManager.getValue(false, new ArrayList(
+								Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)))))))));
 			}
 			if (!UtilMethods.checkEquals(PluginMain.createList(args).get(((int) 0d)), Bukkit.getConsoleSender())) {
 				if (UtilMethods.checkEquals(args.get(((int) 1d)), new java.lang.Long(Math.round(-1d)))) {
+					ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(1d));
 					if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 						Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: -1, running on join"));
 					}
-					ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(1d));
-					for (int a049b48cc73ac4ae0a81af46ef351b8c6 = 0; a049b48cc73ac4ae0a81af46ef351b8c6 < ((Number) PluginMain
-							.getInstance().getConfig().get("menus")).intValue(); a049b48cc73ac4ae0a81af46ef351b8c6++) {
+					for (int af5b8473dd4a24f9cb933d6cef628a314 = 0; af5b8473dd4a24f9cb933d6cef628a314 < ((Number) PluginMain
+							.getInstance().getConfig().get("menus")).intValue(); af5b8473dd4a24f9cb933d6cef628a314++) {
 						ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
 								Math.round(((Number) ac7e54802b7c5d9dab276d69f24f305c7).doubleValue()));
 						if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 							Bukkit.getConsoleSender().sendMessage(PluginMain
 									.color(("DEBUG: Doing loop " + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
 						}
-						if ((((java.lang.Boolean) org.bukkit.configuration.file.YamlConfiguration
-								.loadConfiguration(new File((String.valueOf(
-										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
-										+ (("menu" + String.valueOf(
-												Math.round(((Number) ac7e54802b7c5d9dab276d69f24f305c7).doubleValue())))
-												+ ".yml"))))
-								.get("onJoin")).booleanValue()
-								&& ((org.bukkit.permissions.Permissible) args.get(((int) 0d)))
-										.hasPermission(
-												String.valueOf(
-														org.bukkit.configuration.file.YamlConfiguration
-																.loadConfiguration(new File((String
-																		.valueOf(VariableManager.getValue(
-																				false,
-																				new ArrayList(
-																						Arrays.asList("menusFolder"))))
-																		+ (("menu" + String.valueOf(Math.round(
-																				((Number) ac7e54802b7c5d9dab276d69f24f305c7)
-																						.doubleValue())))
-																				+ ".yml"))))
-																.get("permission"))))) {
+						if ((!((java.util.List) VariableManager.getValue(false,
+								new ArrayList(Arrays
+										.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+												.isEmpty()
+								&& (!UtilMethods.checkEquals(((java.util.List) VariableManager.getValue(false,
+										new ArrayList(Arrays.asList(
+												("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+														.get(((int) 2d)),
+										"")
+										&& (((java.lang.Boolean) ((java.util.List) VariableManager.getValue(false,
+												new ArrayList(Arrays.asList(("menuCache"
+														+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+																.get(((int) 0d))).booleanValue()
+												&& ((org.bukkit.permissions.Permissible) args.get(((int) 0d)))
+														.hasPermission(String.valueOf(((java.util.List) VariableManager
+																.getValue(false, new ArrayList(
+																		Arrays.asList(("menuCache" + String.valueOf(
+																				ac7e54802b7c5d9dab276d69f24f305c7))))))
+																						.get(((int) 3d)))))))) {
 							Bukkit.getConsoleSender().sendMessage(PluginMain.color(("DEBUG: Doing loop sending menu "
 									+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
-							Object aba85cc2c7c47467692662d87bc3a5119 = ac7e54802b7c5d9dab276d69f24f305c7;
+							Object a96036c92547b4ea29abdc19d38eaa7d4 = ac7e54802b7c5d9dab276d69f24f305c7;
 							new org.bukkit.scheduler.BukkitRunnable() {
-								Object a1b1b9647c36f46ac97045b8cb37f9b47 = aba85cc2c7c47467692662d87bc3a5119;
+								Object aac448d9c3dc340bcbd8318d300727b15 = a96036c92547b4ea29abdc19d38eaa7d4;
 
 								public void run() {
 									try {
 										((org.bukkit.entity.Player) PluginMain.createList(args).get(((int) 0d)))
-												.spigot().sendMessage(
-														net.md_5.bungee.chat.ComponentSerializer.parse(String
-																.valueOf(org.bukkit.configuration.file.YamlConfiguration
-																		.loadConfiguration(new File((String
-																				.valueOf(VariableManager.getValue(
-																						false,
-																						new ArrayList(Arrays.asList(
-																								"menusFolder"))))
-																				+ ("Menu" + (String.valueOf(Math.round(
-																						((Number) a1b1b9647c36f46ac97045b8cb37f9b47)
-																								.doubleValue()))
-																						+ ".yml")))))
-																		.get("JSON"))));
+												.spigot()
+												.sendMessage(net.md_5.bungee.chat.ComponentSerializer.parse(
+														String.valueOf(((java.util.List) VariableManager.getValue(false,
+																new ArrayList(Arrays.asList(("menuCache" + String
+																		.valueOf(aac448d9c3dc340bcbd8318d300727b15))))))
+																				.get(((int) 2d)))));
 									} catch (Exception ex) {
 										ex.printStackTrace();
 									}
 								}
-							}.runTaskLater(
-									PluginMain.getInstance(), Duration
-											.fromTicks(
-													((Number) org.bukkit.configuration.file.YamlConfiguration
-															.loadConfiguration(new File((String
-																	.valueOf(VariableManager.getValue(
-																			false,
-																			new ArrayList(
-																					Arrays.asList("menusFolder"))))
-																	+ (("menu" + String.valueOf(Math.round(
-																			((Number) ac7e54802b7c5d9dab276d69f24f305c7)
-																					.doubleValue())))
-																			+ ".yml"))))
-															.get("onJoinDelay")).doubleValue())
+							}.runTaskLater(PluginMain.getInstance(),
+									Duration.fromTicks(((Number) ((java.util.List) VariableManager.getValue(false,
+											new ArrayList(Arrays.asList(("menuCache"
+													+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+															.get(((int) 1d))).doubleValue())
 											.getTicks());
+						}
+						if ((UtilMethods
+								.checkEquals(((java.util.List) VariableManager.getValue(false,
+										new ArrayList(Arrays.asList(
+												("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+														.get(((int) 2d)),
+										"")
+								&& ((java.lang.Boolean) ((java.util.List) VariableManager.getValue(false,
+										new ArrayList(Arrays.asList(
+												("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+														.get(((int) 0d))).booleanValue())) {
+							if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug"))
+									.booleanValue()) {
+								Bukkit.getConsoleSender().sendMessage(
+										PluginMain.color(("&cDespite being told to onJoin there was no JSON for menu "
+												+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
+							}
 						}
 						ac7e54802b7c5d9dab276d69f24f305c7 = UtilMethods.addToObject(ac7e54802b7c5d9dab276d69f24f305c7,
 								new java.lang.Double(1d));
 					}
 				}
-				if (((((Number) Double.valueOf(String.valueOf(args.get(((int) 1d))))).doubleValue() >= 1d)
-						&& ((org.bukkit.permissions.Permissible) args.get(((int) 0d)))
-								.hasPermission(String.valueOf(org.bukkit.configuration.file.YamlConfiguration
-										.loadConfiguration(new File((String
-												.valueOf(VariableManager.getValue(false,
-														new ArrayList(Arrays.asList("menusFolder"))))
-												+ (("menu" + String.valueOf(Math.round(
-														((Number) Double.valueOf(String.valueOf(args.get(((int) 1d)))))
-																.doubleValue())))
-														+ ".yml"))))
-										.get("permission"))))) {
-					if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
-						Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Run specified menu"));
+				if ((((Number) Double.valueOf(String.valueOf(args.get(((int) 1d))))).doubleValue() >= 1d)) {
+					if ((!UtilMethods.checkEquals(((java.util.List) VariableManager.getValue(false,
+							new ArrayList(
+									Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+											.get(((int) 2d)),
+							"")
+							&& ((org.bukkit.permissions.Permissible) args.get(((int) 0d))).hasPermission(String.valueOf(
+									((java.util.List) VariableManager.getValue(false, new ArrayList(Arrays.asList(
+											("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+													.get(((int) 3d)))))) {
+						if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+							Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Run specified menu"));
+						}
+						((org.bukkit.entity.Player) args.get(((int) 0d))).spigot()
+								.sendMessage(net.md_5.bungee.chat.ComponentSerializer.parse(String.valueOf(
+										((java.util.List) VariableManager.getValue(false, new ArrayList(Arrays.asList(
+												("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+														.get(((int) 2d)))));
 					}
-					((org.bukkit.entity.Player) args.get(((int) 0d))).spigot()
-							.sendMessage(net.md_5.bungee.chat.ComponentSerializer.parse(String.valueOf(
-									org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(new File((String
-											.valueOf(VariableManager.getValue(false,
-													new ArrayList(Arrays.asList("menusFolder"))))
-											+ (("menu" + String.valueOf(Math.round(
-													((Number) Double.valueOf(String.valueOf(args.get(((int) 1d)))))
-															.doubleValue())))
-													+ ".yml"))))
-											.get("JSON"))));
+					if (UtilMethods.checkEquals(((java.util.List) VariableManager.getValue(false,
+							new ArrayList(
+									Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
+											.get(((int) 2d)),
+							"")) {
+						if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+							Bukkit.getConsoleSender().sendMessage(PluginMain.color(("&cThere was no JSON for menu "
+									+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
+						}
+						((org.bukkit.command.CommandSender) PluginMain.createList(args).get(((int) 0d)))
+								.sendMessage(PluginMain.color("&Empty menu report this to server owner!"));
+					}
 				}
 			}
 			if (UtilMethods.checkEquals(PluginMain.createList(args).get(((int) 0d)), Bukkit.getConsoleSender())) {
@@ -355,19 +445,24 @@ public class PluginMain extends JavaPlugin implements Listener {
 			Object afb74d8cdcbacce1424af1ff3e3bebb39 = null;
 			Object aa89d9df482d7466591062440e807ee2b = null;
 			Object ac2edd451d6e16126b5c7aeb12c76b78f = null;
+			Object a42f0255461bdb78c28dd7689b3b51752 = null;
 			Object accb69c8bfbc31b9d514fb72cc21dc24c = null;
+			Object a206f29d3782cdea4d073bd356cebd6f2 = null;
+			Object a3e9c510676e205eee84d88589a797e9f = null;
+			Object ac638de2c6894c7b946383722bdfaf809 = null;
 			Object aa3544f8fbd1c4aad82174b30a4a48464 = null;
+			Object a1f75ee55d82f2f492d4c449fc408cf31 = null;
 			Object ac7e54802b7c5d9dab276d69f24f305c7 = null;
+			Object a2d037a7f5c916ee046a675091428d625 = null;
+			ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(1d));
 			if (UtilMethods.checkEquals(PluginMain.getInstance().getConfig().get("configVersion"),
 					new java.lang.Double(1.0d))) {
 				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
-					Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Plugin config update start"));
+					Bukkit.getConsoleSender().sendMessage(PluginMain.color("Config version found as 1.0 updating!"));
 				}
-				Bukkit.getConsoleSender().sendMessage(PluginMain.color("Config version found as 1.0 updating!"));
 				aa3544f8fbd1c4aad82174b30a4a48464 = PluginMain.getInstance().getConfig().get("onJoin");
 				afb74d8cdcbacce1424af1ff3e3bebb39 = PluginMain.getInstance().getConfig().get("onJoinDelay");
 				aa89d9df482d7466591062440e807ee2b = PluginMain.getInstance().getConfig().get("menu");
-				ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(1d));
 				accb69c8bfbc31b9d514fb72cc21dc24c = ("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7));
 				Bukkit.getConsoleSender()
 						.sendMessage(PluginMain.color(String.valueOf(aa89d9df482d7466591062440e807ee2b)));
@@ -493,8 +588,250 @@ public class PluginMain extends JavaPlugin implements Listener {
 								+ (String.valueOf(accb69c8bfbc31b9d514fb72cc21dc24c) + ".yml"))).toPath(),
 						Collections.singleton("menuVersion: 1.01"), java.nio.charset.StandardCharsets.UTF_8,
 						java.nio.file.StandardOpenOption.APPEND);
+			}
+			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+				Bukkit.getConsoleSender().sendMessage(PluginMain.color("Config is newer than 1.01 updating!"));
+			}
+			ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(1d));
+			if ((((Number) PluginMain.getInstance().getConfig().get("configVersion"))
+					.doubleValue() < ((Number) VariableManager.getValue(false,
+							new ArrayList(Arrays.asList("pluginVersion")))).doubleValue())) {
 				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
-					Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Config update finish"));
+					Bukkit.getConsoleSender()
+							.sendMessage(PluginMain.color("Older version detected, only minor update needed."));
+				}
+				a2d037a7f5c916ee046a675091428d625 = PluginMain.getInstance().getConfig().get("debug");
+				a3e9c510676e205eee84d88589a797e9f = PluginMain.getInstance().getConfig().get("menus");
+				new File(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+						.delete();
+				new File(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+						.createNewFile();
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton("################## GLOBAL SETTINGS ##################"),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton(("debug: " + String.valueOf(a2d037a7f5c916ee046a675091428d625))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+						java.nio.file.StandardOpenOption.APPEND);
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton("#How many menus do you want? Default is 1. "),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton(
+								"#Menus have been moved to their own files for easier editing of multiple menus."),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton(("menus: " + String.valueOf(a3e9c510676e205eee84d88589a797e9f))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+						java.nio.file.StandardOpenOption.APPEND);
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton(
+								"#Future proofing! Don't change this. I can't stop you, but doing so can corrupt your config and that makes it sad."),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(
+						new File(String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("configFile")))))
+										.toPath(),
+						Collections.singleton(("configVersion: " + String.valueOf(
+								VariableManager.getValue(false, new ArrayList(Arrays.asList("pluginVersion")))))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				while ((((Number) ac7e54802b7c5d9dab276d69f24f305c7)
+						.doubleValue() <= ((Number) PluginMain.getInstance().getConfig().get("menus")).doubleValue())) {
+					if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+						Bukkit.getConsoleSender().sendMessage(PluginMain.color(("DEBUG: Running check against menu "
+								+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
+					}
+					if ((((Number) org.bukkit.configuration.file.YamlConfiguration
+							.loadConfiguration(new File((String.valueOf(
+									VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+									+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+							.get("menuVersion"))
+									.doubleValue() < ((Number) VariableManager.getValue(false,
+											new ArrayList(Arrays.asList("pluginVersion")))).doubleValue())) {
+						a42f0255461bdb78c28dd7689b3b51752 = org.bukkit.configuration.file.YamlConfiguration
+								.loadConfiguration(new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+								.get("onJoin");
+						a1f75ee55d82f2f492d4c449fc408cf31 = org.bukkit.configuration.file.YamlConfiguration
+								.loadConfiguration(new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+								.get("onJoinDelay");
+						a206f29d3782cdea4d073bd356cebd6f2 = org.bukkit.configuration.file.YamlConfiguration
+								.loadConfiguration(new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+								.get("JSON");
+						ac638de2c6894c7b946383722bdfaf809 = org.bukkit.configuration.file.YamlConfiguration
+								.loadConfiguration(new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+								.get("permission");
+						new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).delete();
+						new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+										.createNewFile();
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(("################## MENU "
+										+ (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + " ##################"))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										"#onJoin: Do you want this menu to behave like an MOTD and be sent to players on connect? Default: false"),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(("onJoin: " + String.valueOf(a42f0255461bdb78c28dd7689b3b51752))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										"#onJoinDelay: Set the time in ticks you want to hold the message on join. This can help with lining it up with an MOTD  or with other menus. Default is 5. Requires the perm to use command."),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										("onJoinDelay: " + String.valueOf(a1f75ee55d82f2f492d4c449fc408cf31))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										"#menu: put your ENTIRE compacted JSON between the ''.  I use https://minecraftjson.com/ to help me make my JSON. "),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										"#Example: menu: '{\"text\":\"[test]\",\"color\":\"dark_green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"}}'"),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										("JSON: '" + (String.valueOf(a206f29d3782cdea4d073bd356cebd6f2) + "'"))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										("#Permision to be able to use this menu. Setting them to the same value as other menus works as you assume. Default: potato.jsonmenu.menu"
+												+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										("permission: '" + (String.valueOf(ac638de2c6894c7b946383722bdfaf809) + "'"))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(
+										"#Future proofing! Don't change this. I can't stop you, but doing so can corrupt your menu and that makes it sad."),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(
+								new File((String.valueOf(
+										VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+										+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")))
+												.toPath(),
+								Collections.singleton(("menuVersion: " + String.valueOf(VariableManager.getValue(false,
+										new ArrayList(Arrays.asList("pluginVersion")))))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+					}
+					ac7e54802b7c5d9dab276d69f24f305c7 = UtilMethods.addToObject(ac7e54802b7c5d9dab276d69f24f305c7,
+							new java.lang.Double(1d));
+					ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
+							Math.round(((Number) ac7e54802b7c5d9dab276d69f24f305c7).doubleValue()));
 				}
 			}
 		}
@@ -528,14 +865,14 @@ public class PluginMain extends JavaPlugin implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerJoinEvent2(org.bukkit.event.player.PlayerJoinEvent event) throws Exception {
+	public void onPlayerJoinEvent46(org.bukkit.event.player.PlayerJoinEvent event) throws Exception {
 		Object ac7e54802b7c5d9dab276d69f24f305c7 = null;
 		if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 			Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Player Joined"));
 		}
 		ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(0d));
-		for (int a9d5d97ce6ed246e498df9dd87c223702 = 0; a9d5d97ce6ed246e498df9dd87c223702 < ((Number) PluginMain
-				.getInstance().getConfig().get("menus")).intValue(); a9d5d97ce6ed246e498df9dd87c223702++) {
+		for (int ab5723e57cfc64e659f99a16a26725f68 = 0; ab5723e57cfc64e659f99a16a26725f68 < ((Number) PluginMain
+				.getInstance().getConfig().get("menus")).intValue(); ab5723e57cfc64e659f99a16a26725f68++) {
 			ac7e54802b7c5d9dab276d69f24f305c7 = UtilMethods.addToObject(ac7e54802b7c5d9dab276d69f24f305c7,
 					new java.lang.Long(Math.round(1d)));
 			ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
