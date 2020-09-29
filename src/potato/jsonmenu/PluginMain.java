@@ -1,4 +1,4 @@
-package a29ba4648d8f14c52b3cb1fa21a17c279;
+package a347dedd753ed4c8fbc05e2c9197eba7a;
 import java.io.*;
 import java.nio.file.*;
 import java.sql.*;
@@ -60,7 +60,7 @@ public class PluginMain extends JavaPlugin implements Listener {
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 				Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Running gen"));
 			}
-			procedure("genMenus", ((java.util.List) null));
+			procedure("genMenus", new ArrayList());
 			procedure("menuCache", ((java.util.List) null));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,24 +112,56 @@ public class PluginMain extends JavaPlugin implements Listener {
 		}
 		if (command.getName().equalsIgnoreCase("jsonmenu")) {
 			try {
-				if ((PluginMain.createList(commandArgs).isEmpty() || commandArgs[((int) 0d)].contains("help"))) {
-					sender.sendMessage(PluginMain.color("&6This is the admin command for JSON Menus"));
-					sender.sendMessage(PluginMain.color("&6Valid arguments are:&r version, reload"));
-				}
-				if (!PluginMain.createList(commandArgs).isEmpty()) {
+				if ((!PluginMain.createList(commandArgs).isEmpty()
+						&& "edit,reload,version".contains(commandArgs[((int) 0d)]))) {
 					if (commandArgs[((int) 0d)].contains("version")) {
 						sender.sendMessage(PluginMain.color(("&2JSON Menus Version:&r " + String.valueOf(
 								VariableManager.getValue(false, new ArrayList(Arrays.asList("pluginVersion")))))));
 					}
+					if (commandArgs[((int) 0d)].contains("edit")) {
+						if (((UtilMethods.checkEquals(new java.lang.Integer(PluginMain.createList(commandArgs).size()),
+								new java.lang.Double(3d))
+								&& UtilMethods.isNumber(String.valueOf(Double
+										.valueOf(String.valueOf(PluginMain.createList(commandArgs).get(((int) 1d)))))))
+								&& (((Number) Double
+										.valueOf(String.valueOf(PluginMain.createList(commandArgs).get(((int) 1d)))))
+												.doubleValue() <= ((Number) PluginMain.getInstance().getConfig()
+														.get("menus")).doubleValue()))) {
+							((java.util.List) VariableManager.getValue(false,
+									new ArrayList(Arrays.asList(("menuCache"
+											+ String.valueOf(PluginMain.createList(commandArgs).get(((int) 1d))))))))
+													.set(((int) 2d),
+															PluginMain.createList(commandArgs).get(((int) 2d)));
+							procedure("genMenus",
+									new ArrayList(Arrays.asList(
+											new java.lang.Long(Math.round(((Number) Double.valueOf(
+													String.valueOf(PluginMain.createList(commandArgs).get(((int) 1d)))))
+															.doubleValue())),
+											PluginMain.createList(commandArgs).get(((int) 2d)))));
+						} else if ((UtilMethods.checkEquals(
+								new java.lang.Integer(PluginMain.createList(commandArgs).size()),
+								new java.lang.Double(3d))
+								&& ((0d >= ((Number) Double
+										.valueOf(String.valueOf(PluginMain.createList(commandArgs).get(((int) 1d)))))
+												.doubleValue())
+										|| (((Number) PluginMain.getInstance().getConfig().get("menus"))
+												.doubleValue() < ((Number) Double.valueOf(String
+														.valueOf(PluginMain.createList(commandArgs).get(((int) 1d)))))
+																.doubleValue())))) {
+							sender.sendMessage(PluginMain.color("&cInvalid menu!"));
+						} else {
+							sender.sendMessage(PluginMain.color("&cFormat is: <menu number> <json>"));
+						}
+					}
 					if (commandArgs[((int) 0d)].contains("reload")) {
 						reloadConfig();
-						procedure("genMenus", ((java.util.List) null));
+						procedure("genMenus", new ArrayList());
 						procedure("menuCache", ((java.util.List) null));
 						sender.sendMessage(PluginMain.color("&2You have reloaded the config!"));
-					} else if ((!PluginMain.createList(commandArgs).contains("version")
-							&& !PluginMain.createList(commandArgs).contains("reload"))) {
-						sender.sendMessage(PluginMain.color("&cThis argument does not exist!"));
 					}
+				} else {
+					sender.sendMessage(PluginMain.color("&6This is the admin command for JSON Menus"));
+					sender.sendMessage(PluginMain.color("&6Valid arguments are:&r edit, reload, version"));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -185,11 +217,11 @@ public class PluginMain extends JavaPlugin implements Listener {
 								Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)))));
 				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 					a29e17c613c6aac53aab93212fbaceb70 = new java.lang.Double(0d);
-					for (int a64db437ac0114e1aac9d011d55a76f13 = 0; a64db437ac0114e1aac9d011d55a76f13 < ((java.util.List) VariableManager
+					for (int adf325fae812e41be887f721fe1f4ac9d = 0; adf325fae812e41be887f721fe1f4ac9d < ((java.util.List) VariableManager
 							.getValue(false,
 									new ArrayList(Arrays.asList(
 											("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
-													.size(); a64db437ac0114e1aac9d011d55a76f13++) {
+													.size(); adf325fae812e41be887f721fe1f4ac9d++) {
 						Bukkit.getConsoleSender().sendMessage(
 								PluginMain.color(String.valueOf(((java.util.List) VariableManager.getValue(false,
 										new ArrayList(Arrays.asList(
@@ -212,102 +244,231 @@ public class PluginMain extends JavaPlugin implements Listener {
 		}
 		if (procedure.equalsIgnoreCase("genMenus")) {
 			Object a703b35c49ddf825b94dd04d1d28896cf = null;
+			Object a42f0255461bdb78c28dd7689b3b51752 = null;
+			Object a206f29d3782cdea4d073bd356cebd6f2 = null;
+			Object ac638de2c6894c7b946383722bdfaf809 = null;
+			Object a1f75ee55d82f2f492d4c449fc408cf31 = null;
 			Object ac7e54802b7c5d9dab276d69f24f305c7 = null;
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
-				Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Begining menu generation"));
+				Bukkit.getConsoleSender().sendMessage(PluginMain.color("Generating menus"));
 			}
-			ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(1d));
-			while ((((Number) ac7e54802b7c5d9dab276d69f24f305c7)
-					.doubleValue() <= ((Number) PluginMain.getInstance().getConfig().get("menus")).doubleValue())) {
+			if ((!PluginMain.createList(args).isEmpty()
+					&& UtilMethods.isNumber(String.valueOf(Double.valueOf(String.valueOf(args.get(((int) 0d)))))))) {
 				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
-					Bukkit.getConsoleSender().sendMessage(PluginMain.color(("DEBUG: Running check against menu "
-							+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
+					Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: User edited command"));
 				}
-				a703b35c49ddf825b94dd04d1d28896cf = new File(
-						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
-								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")));
-				if (!new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).exists()) {
-					new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).createNewFile();
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(("################## MENU "
-									+ (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + " ##################"))),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(
-									"#onJoin: Do you want this menu to behave like an MOTD and be sent to players on connect? Default: false"),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(("onJoin: " + "false")), java.nio.charset.StandardCharsets.UTF_8,
-							java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
-							java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(
-									"#onJoinDelay: Set the time in ticks you want to hold the message on join. This can help with lining it up with an MOTD  or with other menus. Default is 5. Requires the perm to use command."),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(("onJoinDelay: " + "5")), java.nio.charset.StandardCharsets.UTF_8,
-							java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
-							java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(
-									"#menu: put your ENTIRE compacted JSON between the ''.  I use https://minecraftjson.com/ to help me make my JSON. "),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(
-									"#Example: menu: '{\"text\":\"[test]\",\"color\":\"dark_green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"}}'"),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(("JSON: " + "''")), java.nio.charset.StandardCharsets.UTF_8,
-							java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
-							java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(
-									("#Permision to be able to use this menu. Setting them to the same value as other menus works as you assume. Default: potato.jsonmenu.menu"
-											+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(("permission: 'potato.jsonmenu.menu"
-									+ (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + "'"))),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
-							java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(
-									"#Future proofing! Don't change this. I can't stop you, but doing so can corrupt your menu and that makes it sad."),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-					Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
-							Collections.singleton(("menuVersion: " + String.valueOf(
-									VariableManager.getValue(false, new ArrayList(Arrays.asList("pluginVersion")))))),
-							java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
-				}
-				if ((new File(
-						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
-								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).exists()
-						&& (((Number) PluginMain.getInstance().getConfig().get("configVersion"))
-								.doubleValue() < ((Number) org.bukkit.configuration.file.YamlConfiguration
-										.loadConfiguration(new File((String
-												.valueOf(VariableManager.getValue(false,
-														new ArrayList(Arrays.asList("menusFolder"))))
-												+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))
-														+ ".yml"))))
-										.get("menuVersion")).doubleValue()))) {
-					Bukkit.getConsoleSender()
-							.sendMessage(PluginMain.color(("&cSomething is wrong with the file for Menu "
-									+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
-					Bukkit.getConsoleSender()
-							.sendMessage(PluginMain.color("&cConsider deleting it to regenerate file!"));
-				}
-				ac7e54802b7c5d9dab276d69f24f305c7 = UtilMethods.addToObject(ac7e54802b7c5d9dab276d69f24f305c7,
-						new java.lang.Double(1d));
 				ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
-						Math.round(((Number) ac7e54802b7c5d9dab276d69f24f305c7).doubleValue()));
+						Math.round(((Number) args.get(((int) 0d))).doubleValue()));
+				a42f0255461bdb78c28dd7689b3b51752 = org.bukkit.configuration.file.YamlConfiguration
+						.loadConfiguration(new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+						.get("onJoin");
+				a1f75ee55d82f2f492d4c449fc408cf31 = org.bukkit.configuration.file.YamlConfiguration
+						.loadConfiguration(new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+						.get("onJoinDelay");
+				a206f29d3782cdea4d073bd356cebd6f2 = args.get(((int) 1d));
+				ac638de2c6894c7b946383722bdfaf809 = org.bukkit.configuration.file.YamlConfiguration
+						.loadConfiguration(new File((String
+								.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))))
+						.get("permission");
+				new File((String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+						+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).delete();
+				new File((String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+						+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).createNewFile();
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(("################## MENU "
+								+ (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + " ##################"))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(
+								"#onJoin: Do you want this menu to behave like an MOTD and be sent to players on connect? Default: false"),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(("onJoin: " + String.valueOf(a42f0255461bdb78c28dd7689b3b51752))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+						java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(
+								"#onJoinDelay: Set the time in ticks you want to hold the message on join. This can help with lining it up with an MOTD  or with other menus. Default is 5. Requires the perm to use command."),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(("onJoinDelay: " + String.valueOf(a1f75ee55d82f2f492d4c449fc408cf31))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+						java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(
+								"#menu: put your ENTIRE compacted JSON between the ''.  I use https://minecraftjson.com/ to help me make my JSON. "),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(
+								"#Example: menu: '{\"text\":\"[test]\",\"color\":\"dark_green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"}}'"),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(("JSON: '" + (String.valueOf(a206f29d3782cdea4d073bd356cebd6f2) + "'"))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+						java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(
+								("#Permision to be able to use this menu. Setting them to the same value as other menus works as you assume. Default: potato.jsonmenu.menu"
+										+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(
+								("permission: '" + (String.valueOf(ac638de2c6894c7b946383722bdfaf809) + "'"))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+						java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(
+								"#Future proofing! Don't change this. I can't stop you, but doing so can corrupt your menu and that makes it sad."),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+				Files.write(new File(
+						(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+								+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).toPath(),
+						Collections.singleton(("menuVersion: " + String.valueOf(
+								VariableManager.getValue(false, new ArrayList(Arrays.asList("pluginVersion")))))),
+						java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+			} else {
+				Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: No args passed, doing full check"));
+				ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(1d));
+				while ((((Number) ac7e54802b7c5d9dab276d69f24f305c7)
+						.doubleValue() <= ((Number) PluginMain.getInstance().getConfig().get("menus")).doubleValue())) {
+					if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
+						Bukkit.getConsoleSender().sendMessage(PluginMain.color(("DEBUG: Running check against menu "
+								+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
+					}
+					a703b35c49ddf825b94dd04d1d28896cf = new File((String
+							.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+							+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml")));
+					if (!new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).exists()) {
+						new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).createNewFile();
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(("################## MENU "
+										+ (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + " ##################"))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(
+										"#onJoin: Do you want this menu to behave like an MOTD and be sent to players on connect? Default: false"),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(("onJoin: " + "false")), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(
+										"#onJoinDelay: Set the time in ticks you want to hold the message on join. This can help with lining it up with an MOTD  or with other menus. Default is 5. Requires the perm to use command."),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(("onJoinDelay: " + "5")), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(
+										"#menu: put your ENTIRE compacted JSON between the ''.  I use https://minecraftjson.com/ to help me make my JSON. "),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(
+										"#Example: menu: '{\"text\":\"[test]\",\"color\":\"dark_green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"}}'"),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(("JSON: " + "''")), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(
+										("#Permision to be able to use this menu. Setting them to the same value as other menus works as you assume. Default: potato.jsonmenu.menu"
+												+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(("permission: 'potato.jsonmenu.menu"
+										+ (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + "'"))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(""), java.nio.charset.StandardCharsets.UTF_8,
+								java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(
+										"#Future proofing! Don't change this. I can't stop you, but doing so can corrupt your menu and that makes it sad."),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+						Files.write(new File(String.valueOf(a703b35c49ddf825b94dd04d1d28896cf)).toPath(),
+								Collections.singleton(("menuVersion: " + String.valueOf(VariableManager.getValue(false,
+										new ArrayList(Arrays.asList("pluginVersion")))))),
+								java.nio.charset.StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.APPEND);
+					}
+					if ((new File((String
+							.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
+							+ (("menu" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)) + ".yml"))).exists()
+							&& (((Number) PluginMain.getInstance().getConfig()
+									.get("configVersion"))
+											.doubleValue() < ((Number) org.bukkit.configuration.file.YamlConfiguration
+													.loadConfiguration(
+															new File((String
+																	.valueOf(VariableManager.getValue(
+																			false,
+																			new ArrayList(
+																					Arrays.asList("menusFolder"))))
+																	+ (("menu" + String
+																			.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))
+																			+ ".yml"))))
+													.get("menuVersion")).doubleValue()))) {
+						Bukkit.getConsoleSender()
+								.sendMessage(PluginMain.color(("&cSomething is wrong with the file for Menu "
+										+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
+						Bukkit.getConsoleSender()
+								.sendMessage(PluginMain.color("&cConsider deleting it to regenerate file!"));
+					}
+					ac7e54802b7c5d9dab276d69f24f305c7 = UtilMethods.addToObject(ac7e54802b7c5d9dab276d69f24f305c7,
+							new java.lang.Double(1d));
+					ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
+							Math.round(((Number) ac7e54802b7c5d9dab276d69f24f305c7).doubleValue()));
+				}
 			}
 		}
 		if (procedure.equalsIgnoreCase("runMenu")) {
@@ -330,8 +491,8 @@ public class PluginMain extends JavaPlugin implements Listener {
 					if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 						Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: -1, running on join"));
 					}
-					for (int af5b8473dd4a24f9cb933d6cef628a314 = 0; af5b8473dd4a24f9cb933d6cef628a314 < ((Number) PluginMain
-							.getInstance().getConfig().get("menus")).intValue(); af5b8473dd4a24f9cb933d6cef628a314++) {
+					for (int a2f0b5f16ccdd40b8af194b62665ef643 = 0; a2f0b5f16ccdd40b8af194b62665ef643 < ((Number) PluginMain
+							.getInstance().getConfig().get("menus")).intValue(); a2f0b5f16ccdd40b8af194b62665ef643++) {
 						ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
 								Math.round(((Number) ac7e54802b7c5d9dab276d69f24f305c7).doubleValue()));
 						if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
@@ -359,9 +520,9 @@ public class PluginMain extends JavaPlugin implements Listener {
 																						.get(((int) 3d)))))))) {
 							Bukkit.getConsoleSender().sendMessage(PluginMain.color(("DEBUG: Doing loop sending menu "
 									+ String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))));
-							Object a96036c92547b4ea29abdc19d38eaa7d4 = ac7e54802b7c5d9dab276d69f24f305c7;
+							Object a99967c6d653040eeb4a877ef0b0f44f9 = ac7e54802b7c5d9dab276d69f24f305c7;
 							new org.bukkit.scheduler.BukkitRunnable() {
-								Object aac448d9c3dc340bcbd8318d300727b15 = a96036c92547b4ea29abdc19d38eaa7d4;
+								Object abcdaf371bac14969a350348ea107c427 = a99967c6d653040eeb4a877ef0b0f44f9;
 
 								public void run() {
 									try {
@@ -370,7 +531,7 @@ public class PluginMain extends JavaPlugin implements Listener {
 												.sendMessage(net.md_5.bungee.chat.ComponentSerializer.parse(
 														String.valueOf(((java.util.List) VariableManager.getValue(false,
 																new ArrayList(Arrays.asList(("menuCache" + String
-																		.valueOf(aac448d9c3dc340bcbd8318d300727b15))))))
+																		.valueOf(abcdaf371bac14969a350348ea107c427))))))
 																				.get(((int) 2d)))));
 									} catch (Exception ex) {
 										ex.printStackTrace();
@@ -865,14 +1026,14 @@ public class PluginMain extends JavaPlugin implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerJoinEvent46(org.bukkit.event.player.PlayerJoinEvent event) throws Exception {
+	public void onPlayerJoinEvent79(org.bukkit.event.player.PlayerJoinEvent event) throws Exception {
 		Object ac7e54802b7c5d9dab276d69f24f305c7 = null;
 		if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 			Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Player Joined"));
 		}
 		ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(0d));
-		for (int ab5723e57cfc64e659f99a16a26725f68 = 0; ab5723e57cfc64e659f99a16a26725f68 < ((Number) PluginMain
-				.getInstance().getConfig().get("menus")).intValue(); ab5723e57cfc64e659f99a16a26725f68++) {
+		for (int a4cf6a0fd76a94da98f4b8ff0e4f281cf = 0; a4cf6a0fd76a94da98f4b8ff0e4f281cf < ((Number) PluginMain
+				.getInstance().getConfig().get("menus")).intValue(); a4cf6a0fd76a94da98f4b8ff0e4f281cf++) {
 			ac7e54802b7c5d9dab276d69f24f305c7 = UtilMethods.addToObject(ac7e54802b7c5d9dab276d69f24f305c7,
 					new java.lang.Long(Math.round(1d)));
 			ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
