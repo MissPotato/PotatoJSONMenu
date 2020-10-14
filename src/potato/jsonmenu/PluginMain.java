@@ -1,4 +1,4 @@
-package aeca826339eb143129bd6d538b05961b8;
+package a0b75f1b744114830919a5684e1eba611;
 import java.io.*;
 import java.nio.file.*;
 import java.sql.*;
@@ -26,7 +26,7 @@ public class PluginMain extends JavaPlugin implements Listener {
 					new ArrayList(Arrays.asList("menusFolder")));
 			VariableManager.setValue(false, "./plugins/PotatoJSONMenu/config.yml",
 					new ArrayList(Arrays.asList("configFile")));
-			VariableManager.setValue(false, new java.lang.Double(1.03d), new ArrayList(Arrays.asList("pluginVersion")));
+			VariableManager.setValue(false, new java.lang.Double(1.04d), new ArrayList(Arrays.asList("pluginVersion")));
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 				Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Variables set"));
 			}
@@ -220,11 +220,11 @@ public class PluginMain extends JavaPlugin implements Listener {
 								Arrays.asList(("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7)))));
 				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 					a29e17c613c6aac53aab93212fbaceb70 = new java.lang.Double(0d);
-					for (int abd9021d798cc4398b0635b884b792325 = 0; abd9021d798cc4398b0635b884b792325 < ((java.util.List) VariableManager
+					for (int ad0e0303196e84d04a9868e09f93f841c = 0; ad0e0303196e84d04a9868e09f93f841c < ((java.util.List) VariableManager
 							.getValue(false,
 									new ArrayList(Arrays.asList(
 											("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
-													.size(); abd9021d798cc4398b0635b884b792325++) {
+													.size(); ad0e0303196e84d04a9868e09f93f841c++) {
 						Bukkit.getConsoleSender().sendMessage(
 								PluginMain.color(String.valueOf(((java.util.List) VariableManager.getValue(false,
 										new ArrayList(Arrays.asList(
@@ -495,8 +495,8 @@ public class PluginMain extends JavaPlugin implements Listener {
 					if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 						Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: -1, running on join"));
 					}
-					for (int afc7ff24855b24099916d7f7025497417 = 0; afc7ff24855b24099916d7f7025497417 < ((Number) PluginMain
-							.getInstance().getConfig().get("menus")).intValue(); afc7ff24855b24099916d7f7025497417++) {
+					for (int afe631d09695b41c38d88719c638a440e = 0; afe631d09695b41c38d88719c638a440e < ((Number) PluginMain
+							.getInstance().getConfig().get("menus")).intValue(); afe631d09695b41c38d88719c638a440e++) {
 						ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
 								Math.round(((Number) ac7e54802b7c5d9dab276d69f24f305c7).doubleValue()));
 						if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
@@ -540,15 +540,15 @@ public class PluginMain extends JavaPlugin implements Listener {
 												("menuCache" + String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7))))))
 														.get(((int) 2d));
 							}
-							Object a9407552b68f24a35a8726b70f8a42ad6 = aaef2f2a36a2b31359a35a21eafceb685;
+							Object a3549434414674e729ae53a0801ac9423 = aaef2f2a36a2b31359a35a21eafceb685;
 							new org.bukkit.scheduler.BukkitRunnable() {
-								Object aab356115b64e4e088fe7c79749e7cd38 = a9407552b68f24a35a8726b70f8a42ad6;
+								Object a6f2e3bcea7284b988bf038fbab977d1e = a3549434414674e729ae53a0801ac9423;
 
 								public void run() {
 									try {
 										((org.bukkit.entity.Player) args.get(((int) 0d))).spigot()
 												.sendMessage(net.md_5.bungee.chat.ComponentSerializer
-														.parse(String.valueOf(aab356115b64e4e088fe7c79749e7cd38)));
+														.parse(String.valueOf(a6f2e3bcea7284b988bf038fbab977d1e)));
 									} catch (Exception ex) {
 										ex.printStackTrace();
 									}
@@ -1054,14 +1054,14 @@ public class PluginMain extends JavaPlugin implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerJoinEvent6(org.bukkit.event.player.PlayerJoinEvent event) throws Exception {
+	public void onPlayerJoinEvent5(org.bukkit.event.player.PlayerJoinEvent event) throws Exception {
 		Object ac7e54802b7c5d9dab276d69f24f305c7 = null;
 		if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 			Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: Player Joined"));
 		}
 		ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(Math.round(0d));
-		for (int a95f281c6b5e542c88d8ce12978bed654 = 0; a95f281c6b5e542c88d8ce12978bed654 < ((Number) PluginMain
-				.getInstance().getConfig().get("menus")).intValue(); a95f281c6b5e542c88d8ce12978bed654++) {
+		for (int a6c3a50a7f5154a9ca925d0ed0f8830fa = 0; a6c3a50a7f5154a9ca925d0ed0f8830fa < ((Number) PluginMain
+				.getInstance().getConfig().get("menus")).intValue(); a6c3a50a7f5154a9ca925d0ed0f8830fa++) {
 			ac7e54802b7c5d9dab276d69f24f305c7 = UtilMethods.addToObject(ac7e54802b7c5d9dab276d69f24f305c7,
 					new java.lang.Long(Math.round(1d)));
 			ac7e54802b7c5d9dab276d69f24f305c7 = new java.lang.Long(
@@ -1069,11 +1069,11 @@ public class PluginMain extends JavaPlugin implements Listener {
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 				Bukkit.getConsoleSender().sendMessage(PluginMain.color(("DEBUG: looking for onJoin in "
 						+ (String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
-								+ ("Menu" + (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + ".yml"))))));
+								+ ("menu" + (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + ".yml"))))));
 			}
 			if (((java.lang.Boolean) org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(new File(
 					(String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
-							+ ("Menu" + (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + ".yml")))))
+							+ ("menu" + (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + ".yml")))))
 					.get("onJoin")).booleanValue()) {
 				if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 					Bukkit.getConsoleSender().sendMessage(PluginMain.color("DEBUG: onJoin found! "));
@@ -1085,7 +1085,7 @@ public class PluginMain extends JavaPlugin implements Listener {
 			if (((java.lang.Boolean) PluginMain.getInstance().getConfig().get("debug")).booleanValue()) {
 				Bukkit.getConsoleSender().sendMessage(PluginMain.color(("DEBUG: onJoin not found in  "
 						+ (String.valueOf(VariableManager.getValue(false, new ArrayList(Arrays.asList("menusFolder"))))
-								+ ("Menu" + (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + ".yml"))))));
+								+ ("menu" + (String.valueOf(ac7e54802b7c5d9dab276d69f24f305c7) + ".yml"))))));
 			}
 		}
 	}

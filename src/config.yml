@@ -1,6 +1,6 @@
 ################## GLOBAL SETTINGS ##################
 #Future proofing! Don't change this. I can't stop you, but doing so can corrupt your config and that makes it sad.
-configVersion: 1.01
+configVersion: 1.04
 debug: false
 
 #How many menus do you want? Default is 1. 
